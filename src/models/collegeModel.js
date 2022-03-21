@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const { boolean } = require('webidl-conversions')
 
 const collegeSchema = new mongoose.Schema({
     name:{
@@ -19,7 +18,7 @@ const collegeSchema = new mongoose.Schema({
 
     },
     isDeleted:{
-        type:boolean,
+        type:Boolean,
         default:false
     }
 
