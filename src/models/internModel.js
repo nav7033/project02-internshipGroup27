@@ -21,6 +21,10 @@ const internSchema = new mongoose.Schema({
     },
     mobile: {
         type: String,
+        required:true,
+        minlength:10,
+        maxlength:12,
+        pattern:"^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$",
         unique : true,
     },
     collegeId : {

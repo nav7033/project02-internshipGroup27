@@ -1,14 +1,35 @@
 const internModel = require('../models/internModel')
 const ObjectId = require('mongoose').Types.ObjectId
-const createIntern = async function(req,res){
-    let internData = req.body;
-    if(Object.keys(internData) == 0){
-        return res.status(400).send({status:false, msg:"Please Enter the details of Intern"})
+const validator = require('email-validator')
+
+
+
+const createIntern = async function (req, res) {
+    try {
+        let internData = req.body;
+        let email = internData.email
+        let data = Object.keys(internData)
+        if (data == 0 || data == undefined || data == null) {
+            return res.status(400).send({ status: false, msg: "Please Enter the details of Intern" })
+        }
+        if (!internData.name.trim()) {
+            return res.status(400).send({ status: false, msg: "Please Enter the name" })
+        }
+        
+
+        if (validator.validate(email)) {
+            let internData = await internModel.create(internData)
+            return res.status(201).send({ status: false, data: internData })
+        }
+        else {
+            res.status(400).send({ status: false, msg: "invalid email" })
+        }
     }
-    if(!internData.name.trim()){
-        return res.status(400).send({status:false, msg:"Please Enter the name"})
+    catch (err) {
+        res.status(500).send({ status: false, msg: err.message })
     }
-    if(!ObjectId.isValid(internData.collegeId)){
-        return res.status(400).se
-    }
+}
+
+module.export = {
+    createIntern:createIntern
 }
