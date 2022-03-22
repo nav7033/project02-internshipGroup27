@@ -4,12 +4,12 @@ let ObjectId = mongoose.Schema.Types.ObjectId;
 const internSchema = new mongoose.Schema({
     name : {
         type : String,
-        required : true,
+        required :[true,"name is required"],
         trim : true
     },
     email :{
         type:String,
-        required : true,
+        required : [true,"email is required"],
         trim: true,
         validate: {
             validator: function (email) {
@@ -21,7 +21,7 @@ const internSchema = new mongoose.Schema({
     },
     mobile: {
         type: String,
-        required:true,
+        required:[true,"mobile number required"],
         minlength:10,
         maxlength:12,
         pattern:"^(\\([0-9]{3}\\))?[0-9]{3}-[0-9]{4}$",
