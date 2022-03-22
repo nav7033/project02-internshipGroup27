@@ -37,7 +37,7 @@ const createCollege = async function (req, res) {
         //     return res.status(404).send({ status: false, msg: "invalid logoLink" })
         // }
         //checking duplicate entries of college
-        let duplicateData = await collegeModel.find({ name: collegeData.name.trim() })
+        let duplicateData = await collegeModel.findOne({ name: collegeData.name})
         if (duplicateData) {
             return res.status(400).send({ status: false, msg: "college with this name is already present" })
         }
@@ -45,12 +45,6 @@ const createCollege = async function (req, res) {
 
         let collegeCreate = await collegeModel.create(collegeData)
         return res.status(201).send({ status: true, data: collegeCreate })
-
-
-
-
-
-
 
     }
     catch (err) {

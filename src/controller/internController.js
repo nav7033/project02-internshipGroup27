@@ -1,7 +1,7 @@
 const internModel = require('../models/internModel')
 const collegeModel = require('../models/collegeModel')
 const ObjectId = require('mongoose').Types.ObjectId
-const validator = require('email-validator')
+
  
 const isValid = function (value){
     if(typeof value == 'undefined'|| value ===null) return false
@@ -33,15 +33,21 @@ const createIntern = async function (req, res) {
     let college = await collegeModel.findById(internData.collegeId)
     if(!college) return res.status(400).send({status : false, msg : " No College found for the specific college ID"})
     // valid mobile number
+    if(!(/^([+]\d{2})?\d{10}$/.test(internData.mobile))){
+        return res.status(400).send({status:false,msg:"please enter valid mobile no."})
+     }
     let dupMobile = await internModel.findOne({mobile : internData.mobile})
 
     if(dupMobile) return res.status(400).send({status:false,msg:"mobile number is already registered"})
     // valid email 
+    if(!(/^\w+([\.-]?\w+)@\w+([\. -]?\w+)(\.\w{2,3})+$/.test(internData.email))){
+        return res.status(400).send({status:false,msg:"email is not valid"})
+    }
     let dupEmail = await internModel.findOne({email : internData.email})
     
     if(dupEmail) return res.status(400).send({status:false,msg:"email ID is already registered"})
-
-    let savedData = await internModel.create(internData);
+    
+    let savedData = await internModel.create(internData); 
     res.status(201).send({status:true, data : savedData})
     }
     catch (err) {
