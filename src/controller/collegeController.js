@@ -27,6 +27,15 @@ const createCollege = async function (req, res) {
         if (!isValid(collegeData.fullName)) {
             return res.status(400).send({ status: false, msg: "required fullName of college" })
         }
+        let fullName1 = collegeData.fullName
+        function convertFirstLetterToUpperCase(fullName1) {
+            return fullName1
+                .toLowerCase()
+                .split(' ')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+        let firstUpperCare = convertFirstLetterToUpperCase(fullName1)
         // validate link
 
         if (!isValid(collegeData.logoLink)) {
@@ -47,7 +56,7 @@ const createCollege = async function (req, res) {
         let collegeCreate = await collegeModel.create(collegeData)
         let result = {
             name:collegeCreate.name,
-            fullName:collegeCreate.fullName,
+            fullName:firstUpperCare,
             logoLink:collegeCreate.logoLink,
             isDeleted:collegeCreate.isDeleted
         }
