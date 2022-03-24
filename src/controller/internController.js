@@ -71,7 +71,7 @@ const getCollegeData = async function (req, res) {
             return res.status(400).send({ status: false, msg: "collegeName required" })
         }
         let collegeData = await collegeModel.findOne({ name: collegeName,isDeleted:false })
-        if (collegeData.length == 0) {
+        if (!collegeData) {
             return res.status(404).send({ status: false, msg: "not found " })
         }
         let result = {
