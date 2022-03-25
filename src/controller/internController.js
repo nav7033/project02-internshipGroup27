@@ -1,6 +1,6 @@
 const internModel = require('../models/internModel')
 const collegeModel = require('../models/collegeModel')
-const ObjectId = require('mongoose').Types.ObjectId 
+const ObjectId = require('mongoose').Types.ObjectId
 
 
 const isValid = function (value) {
@@ -13,11 +13,12 @@ const isValid = function (value) {
 
 const createIntern = async function (req, res) {
     try {
+        res.setHeader('Access-Control-Allow-Origin', '*')
         let internData = req.body;
         if (Object.keys(internData) == 0) {
             return res.status(400).send({ status: false, msg: "Please Enter the details of Intern" })
         }
-        // name undefined
+      
         if (!internData.name) return res.status(400).send({ status: false, msg: " name is required" })
 
         if (internData.name.trim().length == 0) {
@@ -30,7 +31,7 @@ const createIntern = async function (req, res) {
         if (!ObjectId.isValid(internData.collegeId)) {
             return res.status(400).send({ status: false, msg: "Invalid College ID" })
         }
-        let college = await collegeModel.findOne({_id:internData.collegeId,isDeleted:false})
+        let college = await collegeModel.findOne({ name: internData.collegeName, isDeleted: false })
         if (!college) return res.status(400).send({ status: false, msg: " No College found for the specific college ID" })
         // valid mobile number
         if (!(/^[6-9]\d{9}$/.test(internData.mobile))) {
@@ -50,12 +51,12 @@ const createIntern = async function (req, res) {
         let savedData = await internModel.create(internData);
         let result = {
             isDeleted: savedData.isDeleted,
-            name:savedData.name,
-            email:savedData.email,
-            mobile:savedData.mobile,
-            collegeId:savedData.collegeId
+            name: savedData.name,
+            email: savedData.email,
+            mobile: savedData.mobile,
+            collegeId: savedData.collegeId
         }
-        res.status(201).send({ status: true, data:result })
+        res.status(201).send({ status: true, data: result })
     }
     catch (err) {
         res.status(500).send({ status: false, msg: err.message })
@@ -66,11 +67,12 @@ const createIntern = async function (req, res) {
 const getCollegeData = async function (req, res) {
 
     try {
+        res.setHeader('Access-Control-Allow-Origin', '*')
         let collegeName = req.query.collegeName
         if (!collegeName) {
             return res.status(400).send({ status: false, msg: "collegeName required" })
         }
-        let collegeData = await collegeModel.findOne({ name: collegeName,isDeleted:false })
+        let collegeData = await collegeModel.findOne({ name: collegeName, isDeleted: false })
         if (!collegeData) {
             return res.status(404).send({ status: false, msg: "not found " })
         }
@@ -80,7 +82,7 @@ const getCollegeData = async function (req, res) {
             logoLink: collegeData.logoLink
         }
         let id = collegeData._id
-        let interestedIntern = await internModel.find({ collegeId: id,isDeleted:false }).select({ name: 1, email: 1, mobile: 1 })
+        let interestedIntern = await internModel.find({ collegeId: id, isDeleted: false }).select({ name: 1, email: 1, mobile: 1 })
         if (interestedIntern.length == 0) {
             result['interest'] = "No intern applied till now"
             return res.status(200).send({ status: false, msg: result })
@@ -96,4 +98,4 @@ const getCollegeData = async function (req, res) {
 }
 
 module.exports.createIntern = createIntern,
-    module.exports.getCollegeData = getCollegeData
+module.exports.getCollegeData = getCollegeData

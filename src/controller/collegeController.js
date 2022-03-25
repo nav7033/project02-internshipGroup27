@@ -10,7 +10,7 @@ const isValid = function (value) {
 
 //=========create college============
 const createCollege = async function (req, res) {
-    try {
+    try { 
         // validate body request
         let collegeData = req.body
         if (Object.keys(collegeData) == 0 || collegeData == undefined || collegeData == null) {
